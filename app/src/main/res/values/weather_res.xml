@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <dimen name="default_text_size">12sp</dimen>
+    <dimen name="default_bottom_line_height">2dp</dimen>
+    <dimen name="default_arc_dash_width">5dp</dimen>
+    <dimen name="default_arc_dash_gap_width">5dp</dimen>
+    <dimen name="default_arc_dash_height">2dp</dimen>
+    <dimen name="default_weather_icon_size">10dp</dimen>
+
+
+    <color name="default_text_color">#b47e5e</color>
+    <color name="default_bottom_line_color">#ffda8c</color>
+    <color name="default_arc_color">#ffe1a2</color>
+    <color name="default_arc_solid_color">#ffefcb</color>
+    <color name="default_sun_color">#ffc956</color>
+
+
+
+    <string name="default_start_time">6:30</string>
+    <string name="default_end_time">18:30</string>
+
+</resources>

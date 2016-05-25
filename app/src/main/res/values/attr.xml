@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <declare-styleable name="WeatherViewStyle">
+        <!--开始时间-->
+        <attr name="startTime"  format="string|reference"/>
+        <!--结束时间-->
+        <attr name="endTime"  format="string|reference"/>
+        <!--当前时间-->
+        <attr name="currentTime"  format="string|reference"/>
+        <!--时间文字大小-->
+        <attr name="timeTextSize" format="dimension|reference"/>
+        <!--时间文字颜色-->
+        <attr name="timeTextColor" format="color|reference"/>
+        <!--圆弧上显示的天气图标-->
+        <attr name="weatherDrawable" format="reference"/>
+        <!--底部线条颜色-->
+        <attr name="bottomLineColor" format="color|reference"/>
+        <!--底部线条高度-->
+        <attr name="bottomLineHeight" format="dimension|reference"/>
+        <!--圆弧虚线颜色-->
+        <attr name="arcColor" format="color|reference"/>
+        <!--圆弧虚线宽度-->
+        <attr name="arcDashWidth" format="dimension|reference"/>
+        <!--圆弧虚线空隙宽度-->
+        <attr name="arcDashGapWidth" format="dimension|reference"/>
+        <!--圆弧虚线厚度-->
+        <attr name="arcDashHeight" format="dimension|reference"/>
+        <!--圆弧填充颜色-->
+        <attr name="arcSolidColor" format="color|reference"/>
+        <!--圆弧半径-->
+        <attr name="arcRadius" format="dimension|reference"/>
+        <!--圆弧竖直偏移量-->
+        <attr name="arcVerticalOffset" format="dimension|reference"/>
+
+        <!--太阳的颜色-->
+        <attr name="sunColor" format="color|reference"/>
+
+        <!--文字离图形的距离-->
+        <attr name="textPadding" format="dimension|reference"/>
+    </declare-styleable>
+</resources>
