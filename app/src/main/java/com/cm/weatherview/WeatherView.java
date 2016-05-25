@@ -187,7 +187,12 @@ public class WeatherView extends View {
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
 
-        canvas.drawColor(Color.WHITE);
+        if(getBackground() != null){
+            getBackground().draw(canvas);
+        }else{
+            canvas.drawColor(Color.WHITE);
+        }
+
         drawLine(canvas);
         drawArc(canvas);
 
