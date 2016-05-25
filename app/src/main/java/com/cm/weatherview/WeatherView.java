@@ -152,24 +152,24 @@ public class WeatherView extends View {
             if (mArcRadius == 0) {
                 setMeasuredDimension(width, height);
             } else {
-                width = (int) (mArcRadius * 2 + getPaddingRight() + getPaddingLeft() + getTextWidth(mStartTime) / 2 + getTextWidth(mEndTime) / 2);
-                height = (int) (mArcRadius + getPaddingTop() + getPaddingBottom() + getTextHeight() + mTextPadding + mBottomLineHeight + (mWeatherDrawable == null ? mDefaultWeatherIconSize : mWeatherDrawable.getIntrinsicHeight() / 2));
+                width = (int) (mArcRadius * 2 + getWidthGap());
+                height = (int) (mArcRadius + getHeightGap());
                 setMeasuredDimension(width, height);
             }
 
         } else if (widthMode == MeasureSpec.AT_MOST) {
             if (mArcRadius == 0) {
-                width = (int) ((height - getPaddingBottom() - getPaddingTop() - mTextPadding - getTextHeight() - mBottomLineHeight) * 2 + getPaddingRight() + getPaddingLeft());
+                width = (height - getHeightGap()) * 2 + getWidthGap();
             } else {
-                width = (int) (mArcRadius * 2 + getPaddingRight() + getPaddingLeft() + getTextWidth(mStartTime) / 2 + getTextWidth(mEndTime) / 2);
+                width = (int) (mArcRadius * 2 + getWidthGap());
             }
             setMeasuredDimension(width, height);
 
         } else if (heightMode == MeasureSpec.AT_MOST) {
             if (mArcRadius == 0) {
-                height = (int) ((width - getPaddingLeft() - getPaddingRight() - getTextWidth(mStartTime)/2 - getTextWidth(mEndTime)/2)/2 + getPaddingTop() + getPaddingBottom() + getTextHeight()+ mTextPadding + mBottomLineHeight);
+                height = (width - getWidthGap())/2 + getHeightGap();
             } else {
-                height = (int) (mArcRadius + getPaddingTop() + getPaddingBottom() + getTextHeight() + mTextPadding + mBottomLineHeight + (mWeatherDrawable == null ? mDefaultWeatherIconSize : mWeatherDrawable.getIntrinsicHeight() / 2));
+                height = (int) (mArcRadius + getHeightGap());
             }
 
             setMeasuredDimension(width, height);
@@ -204,7 +204,7 @@ public class WeatherView extends View {
         mPaint.setStrokeWidth(mArcDashHeight);
 
         float left = getPaddingLeft() + (getWidth() - getPaddingLeft() - getPaddingRight() - 2 * mArcRadius) / 2;
-        float top = getHeight() - mArcRadius - getPaddingBottom() - getTextHeight() - mTextPadding;
+        float top = getHeight() - mArcRadius -getBottomHeightGap();
         float right = left + 2 * mArcRadius;
         float bottom = top + 2 * mArcRadius;
         RectF rectF = new RectF(left, top, right, bottom);
@@ -221,8 +221,8 @@ public class WeatherView extends View {
     private void getRadius() {
         if (mArcRadius == 0) {
 
-            int width = getWidth() - getPaddingLeft() - getPaddingRight();
-            int height = (int) (getHeight() - getPaddingTop() - getPaddingBottom() - getTextHeight() - mTextPadding - mBottomLineHeight);
+            int width = getWidth() -getWidthGap();
+            int height = getHeight() - getHeightGap();
 
            if(width / 2 > height){
                mArcRadius = height;
@@ -369,9 +369,44 @@ public class WeatherView extends View {
         mPaint.setStrokeWidth(mBottomLineHeight);
         mPaint.setStyle(Paint.Style.FILL);
 
-        canvas.drawLine(getPaddingLeft(), getHeight() - getPaddingBottom() - getTextHeight() - mTextPadding, getWidth() - getPaddingRight(), getHeight() - getPaddingBottom() - getTextHeight() - mTextPadding, mPaint);
+        canvas.drawLine(getPaddingLeft(), getHeight() - getBottomHeightGap(), getWidth() - getPaddingRight(), getHeight() -getBottomHeightGap(), mPaint);
 
     }
+
+
+    private int getWidthGap(){
+        return getPaddingLeft() + getPaddingRight() + getTextWidth(mStartTime)/2+getTextWidth(mEndTime)/2;
+    }
+
+    private int getHeightGap(){
+        return (int) (getPaddingTop() + getPaddingBottom() + mTextPadding + mBottomLineHeight + getWeatherHeight()/2) + getTextHeight();
+    }
+
+    private int getBottomHeightGap(){
+        return (int) (getPaddingBottom() + getTextHeight() + mTextPadding);
+    }
+
+    private int getWeatherHeight(){
+        if(mWeatherDrawable == null){
+            return (int) mDefaultWeatherIconSize*2;
+        }
+        if(mWeatherDrawable.getIntrinsicHeight() == 0){
+            return (int) mDefaultWeatherIconSize*2;
+        }
+        return mWeatherDrawable.getIntrinsicHeight();
+    }
+
+    private int getWeatherWidth(){
+        if(mWeatherDrawable == null){
+            return (int) mDefaultWeatherIconSize*2;
+        }
+        if(mWeatherDrawable.getIntrinsicWidth() == 0){
+            return (int) mDefaultWeatherIconSize*2;
+        }
+        return mWeatherDrawable.getIntrinsicWidth();
+    }
+
+
 
 
     //依圆心坐标，半径，扇形角度，计算出扇形终射线与圆弧交叉点的xy坐标
