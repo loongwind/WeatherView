@@ -318,7 +318,12 @@ public class WeatherView extends View {
             long start = mDateFormat.parse(mStartTime).getTime();
             long end = mDateFormat.parse(mEndTime).getTime();
             long current = mDateFormat.parse(mCurrentTime).getTime();
-            angle = (int) (1.0f * (current - start) / (end - start) * (180-mArcOffsetAngle*2));
+            float factor = 1.0f * (current - start) / (end - start);
+            if(factor > 1){
+                angle = (int) (180-mArcOffsetAngle*2);
+            }else{
+                angle = (int) (factor * (180-mArcOffsetAngle*2));
+            }
         } catch (ParseException e) {
             e.printStackTrace();
         }
