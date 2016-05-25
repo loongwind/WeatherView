@@ -367,10 +367,11 @@ public class WeatherView extends View {
      * @param point
      */
     private void drawTriangle(Canvas canvas, RectF rect, PointF point) {
+        //因为计算损失精度,所以这里用1像素来微调
         Path path = new Path();
-        path.moveTo(rect.left + offsetX, rect.centerY() - offsetY);// 此点为多边形的起点
-        path.lineTo(point.x, point.y);
-        path.lineTo(point.x, rect.centerY() - offsetY);
+        path.moveTo(rect.left - 1 + offsetX, rect.centerY() - offsetY);// 此点为多边形的起点
+        path.lineTo(point.x - 1, point.y - 1);
+        path.lineTo(point.x - 1, rect.centerY() - offsetY);
         path.close(); // 使这些点构成封闭的多边形
         canvas.drawPath(path, mPaint);
     }
