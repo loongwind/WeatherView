@@ -147,30 +147,35 @@ public class WeatherView extends View {
         int width = MeasureSpec.getSize(widthMeasureSpec);
         int height = MeasureSpec.getSize(heightMeasureSpec);
 
-        if(mArcRadius == 0){
-            setMeasuredDimension(width,height);
-            return;
-        }
 
         if (widthMode == MeasureSpec.AT_MOST && heightMode == MeasureSpec.AT_MOST) {
-            width = (int) (mArcRadius * 2 + getPaddingRight() + getPaddingLeft() + getTextWidth(mStartTime)/2 + getTextWidth(mEndTime)/2);
-            height = (int) (mArcRadius  + getPaddingTop() + getPaddingBottom() + getTextHeight() + mTextPadding + mBottomLineHeight + (mWeatherDrawable == null ? mDefaultWeatherIconSize : mWeatherDrawable.getIntrinsicHeight()/2));
-            setMeasuredDimension(width, height);
+            if (mArcRadius == 0) {
+                setMeasuredDimension(width, height);
+            } else {
+                width = (int) (mArcRadius * 2 + getPaddingRight() + getPaddingLeft() + getTextWidth(mStartTime) / 2 + getTextWidth(mEndTime) / 2);
+                height = (int) (mArcRadius + getPaddingTop() + getPaddingBottom() + getTextHeight() + mTextPadding + mBottomLineHeight + (mWeatherDrawable == null ? mDefaultWeatherIconSize : mWeatherDrawable.getIntrinsicHeight() / 2));
+                setMeasuredDimension(width, height);
+            }
 
         } else if (widthMode == MeasureSpec.AT_MOST) {
-
-            width = (int) (mArcRadius * 2 + getPaddingRight() + getPaddingLeft() + getTextWidth(mStartTime)/2 + getTextWidth(mEndTime)/2);
-
+            if (mArcRadius == 0) {
+                width = (int) ((height - getPaddingBottom() - getPaddingTop() - mTextPadding - getTextHeight() - mBottomLineHeight) * 2 + getPaddingRight() + getPaddingLeft());
+            } else {
+                width = (int) (mArcRadius * 2 + getPaddingRight() + getPaddingLeft() + getTextWidth(mStartTime) / 2 + getTextWidth(mEndTime) / 2);
+            }
             setMeasuredDimension(width, height);
 
         } else if (heightMode == MeasureSpec.AT_MOST) {
-
-            height = (int) (mArcRadius  + getPaddingTop() + getPaddingBottom() + getTextHeight() + mTextPadding + mBottomLineHeight + (mWeatherDrawable == null ? mDefaultWeatherIconSize : mWeatherDrawable.getIntrinsicHeight()/2));
+            if (mArcRadius == 0) {
+                height = (int) ((width - getPaddingLeft() - getPaddingRight() - getTextWidth(mStartTime)/2 - getTextWidth(mEndTime)/2)/2 + getPaddingTop() + getPaddingBottom() + getTextHeight()+ mTextPadding + mBottomLineHeight);
+            } else {
+                height = (int) (mArcRadius + getPaddingTop() + getPaddingBottom() + getTextHeight() + mTextPadding + mBottomLineHeight + (mWeatherDrawable == null ? mDefaultWeatherIconSize : mWeatherDrawable.getIntrinsicHeight() / 2));
+            }
 
             setMeasuredDimension(width, height);
 
         } else {
-            setMeasuredDimension(width,height);
+            setMeasuredDimension(width, height);
         }
 
     }
@@ -191,9 +196,7 @@ public class WeatherView extends View {
      * @param canvas
      */
     private void drawArc(Canvas canvas) {
-        if (mArcRadius == 0) {
-            mArcRadius = Math.min(getHeight() - getPaddingLeft() - getPaddingRight(), getWidth() - getPaddingTop() - getPaddingBottom() - getTextHeight()-mTextPadding)/2;
-        }
+        getRadius();
 
 
         mPaint.setStyle(Paint.Style.STROKE);
@@ -213,6 +216,20 @@ public class WeatherView extends View {
         drawSolidArc(canvas, (int) mArcRadius, (int) left, rectF);
 
 
+    }
+
+    private void getRadius() {
+        if (mArcRadius == 0) {
+
+            int width = getWidth() - getPaddingLeft() - getPaddingRight();
+            int height = (int) (getHeight() - getPaddingTop() - getPaddingBottom() - getTextHeight() - mTextPadding - mBottomLineHeight);
+
+           if(width / 2 > height){
+               mArcRadius = height;
+           }else{
+               mArcRadius = width / 2 ;
+           }
+        }
     }
 
     /**
@@ -312,8 +329,11 @@ public class WeatherView extends View {
 
         int textHeight = getTextHeight();
 
+        mPaint.setPathEffect(null);
+        mPaint.setStyle(Paint.Style.FILL);
+
         canvas.drawText(mStartTime, rect.left - startTextWidth / 2, rect.centerY() + textHeight + mTextPadding, mPaint);
-        canvas.drawText(mEndTime, rect.right - endTextWidth / 2 -2, rect.centerY() + textHeight + mTextPadding, mPaint);
+        canvas.drawText(mEndTime, rect.right - endTextWidth / 2 - 2, rect.centerY() + textHeight + mTextPadding, mPaint);
     }
 
     private int getTextHeight() {
@@ -397,7 +417,7 @@ public class WeatherView extends View {
     }
 
 
-    public  int getTextWidth(Paint paint, String str) {
+    public int getTextWidth(Paint paint, String str) {
         int iRet = 0;
         if (str != null && str.length() > 0) {
             int len = str.length();
@@ -409,9 +429,10 @@ public class WeatherView extends View {
         }
         return iRet;
     }
-    public  int getTextWidth( String str) {
+
+    public int getTextWidth(String str) {
         mPaint.setTextSize(mTimeTextSize);
-        return getTextWidth(mPaint,str);
+        return getTextWidth(mPaint, str);
     }
 
 }
