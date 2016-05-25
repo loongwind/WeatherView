@@ -374,18 +374,34 @@ public class WeatherView extends View {
     }
 
 
+    /**
+     * 宽度除了圆弧以外的空隙
+     * @return
+     */
     private int getWidthGap(){
         return getPaddingLeft() + getPaddingRight() + getTextWidth(mStartTime)/2+getTextWidth(mEndTime)/2;
     }
 
+    /**
+     * 高度除了圆弧以外的空隙
+     * @return
+     */
     private int getHeightGap(){
         return (int) (getPaddingTop() + getPaddingBottom() + mTextPadding + mBottomLineHeight + getWeatherHeight()/2) + getTextHeight();
     }
 
+    /**
+     * 圆弧底部空隙
+     * @return
+     */
     private int getBottomHeightGap(){
         return (int) (getPaddingBottom() + getTextHeight() + mTextPadding);
     }
 
+    /**
+     * 天气图标高度
+     * @return
+     */
     private int getWeatherHeight(){
         if(mWeatherDrawable == null){
             return (int) mDefaultWeatherIconSize*2;
@@ -396,6 +412,10 @@ public class WeatherView extends View {
         return mWeatherDrawable.getIntrinsicHeight();
     }
 
+    /**
+     * 天气图标宽度
+     * @return
+     */
     private int getWeatherWidth(){
         if(mWeatherDrawable == null){
             return (int) mDefaultWeatherIconSize*2;
