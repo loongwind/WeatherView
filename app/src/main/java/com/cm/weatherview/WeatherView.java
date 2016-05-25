@@ -47,11 +47,14 @@ public class WeatherView extends View {
     private int mSunColor;
 
     private float mBottomLineHeight;
-    private float mArcVerticalOffset;
+    private float mArcOffsetAngle;
 
     private Drawable mWeatherDrawable;
 
     private SimpleDateFormat mDateFormat;
+
+    private float offsetX;
+    private float offsetY;
 
 
     public WeatherView(Context context) {
@@ -87,7 +90,7 @@ public class WeatherView extends View {
         mArcDashGapWidth = attrArray.getDimension(R.styleable.WeatherViewStyle_arcDashGapWidth, getResources().getDimension(R.dimen.default_arc_dash_gap_width));
         mArcDashHeight = attrArray.getDimension(R.styleable.WeatherViewStyle_arcDashHeight, getResources().getDimension(R.dimen.default_arc_dash_height));
         mArcRadius = attrArray.getDimension(R.styleable.WeatherViewStyle_arcRadius, 0);
-        mArcVerticalOffset = attrArray.getDimension(R.styleable.WeatherViewStyle_arcVerticalOffset, 0);
+        mArcOffsetAngle = attrArray.getInteger(R.styleable.WeatherViewStyle_arcOffsetAngle, 0);
         mSunColor = attrArray.getColor(R.styleable.WeatherViewStyle_sunColor, getResources().getColor(R.color.default_sun_color));
         mTextPadding = attrArray.getDimension(R.styleable.WeatherViewStyle_textPadding, 0);
         attrArray.recycle();
@@ -203,17 +206,28 @@ public class WeatherView extends View {
         mPaint.setColor(mArcColor);
         mPaint.setStrokeWidth(mArcDashHeight);
 
+
+
+
         float left = getPaddingLeft() + (getWidth() - getPaddingLeft() - getPaddingRight() - 2 * mArcRadius) / 2;
         float top = getHeight() - mArcRadius -getBottomHeightGap();
         float right = left + 2 * mArcRadius;
         float bottom = top + 2 * mArcRadius;
         RectF rectF = new RectF(left, top, right, bottom);
+
+        PointF offsetPoint = calcArcEndPointXY(rectF.centerX(),rectF.centerY(),rectF.width()/2,180+mArcOffsetAngle);
+        offsetX = offsetPoint.x - left;
+        offsetY = rectF.centerY() - offsetPoint.y;
+
+        rectF.top += offsetY;
+        rectF.bottom += offsetY;
+
         DashPathEffect effect = new DashPathEffect(new float[]{mArcDashWidth, mArcDashGapWidth, mArcDashWidth, mArcDashGapWidth}, 0);
         mPaint.setPathEffect(effect);
-        canvas.drawArc(rectF, 180, 180, false, mPaint);
+        canvas.drawArc(rectF, 180 + mArcOffsetAngle, 180 - mArcOffsetAngle*2, false, mPaint);
 
 
-        drawSolidArc(canvas, (int) mArcRadius, (int) left, rectF);
+        drawSolidArc(canvas, rectF);
 
 
     }
@@ -290,18 +304,16 @@ public class WeatherView extends View {
      * 画实心圆弧
      *
      * @param canvas
-     * @param r
-     * @param left
      * @param rectF
      */
-    private void drawSolidArc(Canvas canvas, int r, int left, RectF rectF) {
+    private void drawSolidArc(Canvas canvas, RectF rectF) {
 
         int angle = 0;
         try {
             long start = mDateFormat.parse(mStartTime).getTime();
             long end = mDateFormat.parse(mEndTime).getTime();
             long current = mDateFormat.parse(mCurrentTime).getTime();
-            angle = (int) (1.0f * (current - start) / (end - start) * 180);
+            angle = (int) (1.0f * (current - start) / (end - start) * (180-mArcOffsetAngle*2));
         } catch (ParseException e) {
             e.printStackTrace();
         }
@@ -309,9 +321,9 @@ public class WeatherView extends View {
 
         mPaint.setStyle(Paint.Style.FILL);
         mPaint.setColor(mArcSolidColor);
-        canvas.drawArc(rectF, 180, angle, false, mPaint);
+        canvas.drawArc(rectF, 180+mArcOffsetAngle, angle, false, mPaint);
 
-        PointF point = calcArcEndPointXY(rectF.centerX(), rectF.centerY(), r, 180 + angle);
+        PointF point = calcArcEndPointXY(rectF.centerX(), rectF.centerY(), rectF.width()/2, 180 + mArcOffsetAngle + angle);
 
         drawTriangle(canvas, rectF, point);
         drawWeatherDrawable(canvas, point);
@@ -332,8 +344,8 @@ public class WeatherView extends View {
         mPaint.setPathEffect(null);
         mPaint.setStyle(Paint.Style.FILL);
 
-        canvas.drawText(mStartTime, rect.left - startTextWidth / 2, rect.centerY() + textHeight + mTextPadding, mPaint);
-        canvas.drawText(mEndTime, rect.right - endTextWidth / 2 - 2, rect.centerY() + textHeight + mTextPadding, mPaint);
+        canvas.drawText(mStartTime, rect.left - startTextWidth / 2 + offsetX, rect.centerY() - offsetY + textHeight + mTextPadding, mPaint);
+        canvas.drawText(mEndTime, rect.right - endTextWidth / 2 - 2 - offsetX*2, rect.centerY() -offsetY + textHeight + mTextPadding, mPaint);
     }
 
     private int getTextHeight() {
@@ -351,9 +363,9 @@ public class WeatherView extends View {
      */
     private void drawTriangle(Canvas canvas, RectF rect, PointF point) {
         Path path = new Path();
-        path.moveTo(rect.left, rect.centerY());// 此点为多边形的起点
+        path.moveTo(rect.left + offsetX, rect.centerY() - offsetY);// 此点为多边形的起点
         path.lineTo(point.x, point.y);
-        path.lineTo(point.x, rect.centerY());
+        path.lineTo(point.x, rect.centerY() - offsetY);
         path.close(); // 使这些点构成封闭的多边形
         canvas.drawPath(path, mPaint);
     }

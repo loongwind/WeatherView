@@ -30,8 +30,9 @@
         <attr name="arcSolidColor" format="color|reference"/>
         <!--圆弧半径-->
         <attr name="arcRadius" format="dimension|reference"/>
-        <!--圆弧竖直偏移量-->
-        <attr name="arcVerticalOffset" format="dimension|reference"/>
+
+        <!--圆弧下移角度-->
+        <attr name="arcOffsetAngle" format="integer|reference"/>
 
         <!--太阳的颜色-->
         <attr name="sunColor" format="color|reference"/>
